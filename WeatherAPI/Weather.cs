@@ -7,7 +7,7 @@ namespace WeatherAPI
 {
     public static class Weather
     {
-        public static async Task GetDetails(string url, ResultFormat rformat)
+        public static async Task GetDetails(string url)
         {
             using var httpClient = new HttpClient();
             try
@@ -17,13 +17,14 @@ namespace WeatherAPI
                 // Ensure a successful response
                 if (response.IsSuccessStatusCode)
                 {
+                    string contentType = response.Content.Headers.ContentType.MediaType;
                     string result = await response.Content.ReadAsStringAsync();
-                    switch (rformat)
+                    switch (contentType)
                     {
-                        case ResultFormat.Json:
+                        case "application/json":
                             PrintJsonResult(result);
                             break;
-                        case ResultFormat.Xml:
+                        case "application/xml":
                             PrintXmlResult(result);
                             break;
                         default:

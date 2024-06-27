@@ -4,9 +4,9 @@ using WeatherAPI;
 try
 {
     Console.WriteLine("Deserialized JSON data: \n");
-    await Weather.GetDetails(Constant.jsonResultURL + Constant.APIKey, ResultFormat.Json);
+    await Weather.GetDetails(Constant.jsonResultURL + Constant.APIKey);
     Console.WriteLine("\nDeserialized XML data: \n");
-    await Weather.GetDetails(Constant.xmlResultURL + Constant.APIKey, ResultFormat.Xml);
+    await Weather.GetDetails(Constant.xmlResultURL + Constant.APIKey);
 }
 catch (Exception ex)
 {
