@@ -22,6 +22,7 @@ namespace WeatherAPI.Weather
             Console.WriteLine($"Location: {deserialized.name}, {deserialized.sys.country}");
             Console.WriteLine($"Temperature: {deserialized.main.temp}K");
             Console.WriteLine($"Weather: {deserialized.weather[0].description}");
+            Console.WriteLine($"Sunrise: {deserialized.sys.sunrise}");
         }
         private static WeatherResponse? DeserializeJson(string jsonResult)
         {
@@ -33,5 +34,18 @@ namespace WeatherAPI.Weather
             using StringReader reader = new StringReader(xml);
             return (Current)serializer.Deserialize(reader);
         }
+        #region experimental
+        //possible use of loop to iterate fields
+        //foreach (var weatherResponse in deserialized.weather)
+        //{
+        //    Type type = weatherResponse.GetType();
+        //    foreach (PropertyInfo property in type.GetProperties())
+        //    {
+        //        object value = property.GetValue(weatherResponse);
+        //        Console.WriteLine($"{property.Name}: {value}");
+        //    }
+        //    Console.WriteLine();
+        //}
+        #endregion
     }
 }
