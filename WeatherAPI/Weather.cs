@@ -1,11 +1,13 @@
 ﻿using System.Text.Json;
+using System.Xml.Serialization;
 using static WeatherAPI.JsonResultModel;
+using static WeatherAPI.XmlResultModel;
 
 namespace WeatherAPI
 {
     public static class Weather
     {
-        public static async Task GetJsonDetails(string url)
+        public static async Task GetDetails(string url, ResultFormat rformat)
         {
             using var httpClient = new HttpClient();
             try
@@ -15,14 +17,18 @@ namespace WeatherAPI
                 // Ensure a successful response
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResult = await response.Content.ReadAsStringAsync();
-
-                    var deserialized = JsonSerializer.Deserialize<WeatherResponse>(jsonResult);
-
-                    //this is sample print
-                    Console.WriteLine($"Location: {deserialized.name}, {deserialized.sys.country}");
-                    Console.WriteLine($"Temperature: {deserialized.main.temp}K");
-                    Console.WriteLine($"Weather: {deserialized.weather[0].description}");
+                    string result = await response.Content.ReadAsStringAsync();
+                    switch (rformat)
+                    {
+                        case ResultFormat.Json:
+                            PrintJsonResult(result);
+                            break;
+                        case ResultFormat.Xml:
+                            PrintXmlResult(result);
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 }
                 else
                 {
@@ -33,10 +39,34 @@ namespace WeatherAPI
             {
                 Console.WriteLine($"Error fetching content from the URL: {ex.Message}");
             }
-
-
-
         }
-
+        #region PRIVATE METHODS
+        private static void PrintXmlResult(string result)
+        {
+            Current weatherResponse = DeserializeXml(result);
+            //sample fields to be displayed
+            Console.WriteLine($"Location: {weatherResponse.City.Name}, {weatherResponse.City.Country}");
+            Console.WriteLine($"Temperature: {weatherResponse.Temperature.Value} {weatherResponse.Temperature.Unit}");
+            Console.WriteLine($"Weather: {weatherResponse.Weather.Value}");
+        }
+        private static void PrintJsonResult(string result)
+        {
+            WeatherResponse? deserialized = DeserializeJson(result);
+            //sample fields to be displayed
+            Console.WriteLine($"Location: {deserialized.name}, {deserialized.sys.country}");
+            Console.WriteLine($"Temperature: {deserialized.main.temp}K");
+            Console.WriteLine($"Weather: {deserialized.weather[0].description}");
+        }
+        private static WeatherResponse? DeserializeJson(string jsonResult)
+        {
+            return JsonSerializer.Deserialize<WeatherResponse>(jsonResult);
+        }
+        private static Current DeserializeXml(string xml)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Current));
+            using StringReader reader = new StringReader(xml);
+            return (Current)serializer.Deserialize(reader);
+        }
+        #endregion
     }
 }
