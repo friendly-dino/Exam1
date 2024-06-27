@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using System.Xml.Serialization;
-using static WeatherAPI.JsonResultModel;
-using static WeatherAPI.XmlResultModel;
+using static WeatherAPI.Models.JsonResultModel;
+using static WeatherAPI.Models.XmlResultModel;
 
-namespace WeatherAPI
+namespace WeatherAPI.Weather
 {
     public static class Weather
     {
