@@ -1,6 +1,6 @@
 ﻿namespace WeatherAPI
 {
-    public class JsonResultModel
+    public static class JsonResultModel
     {
         public class Coord
         {
